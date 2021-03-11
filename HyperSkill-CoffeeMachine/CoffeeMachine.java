@@ -8,25 +8,33 @@ public class CoffeeMachine {
     private static int beans = 120;
     private static int cups = 9;
     private static int money = 550;
-
+    private static boolean exit = true;
     public static void main(String[] args) {
-        printMenu();
+
         Scanner sc = new Scanner(System.in);
-        System.out.println("Write action (buy, fill, take):");
-        String command = sc.nextLine();
-        switch(command){
-            case "buy":
-                buy(sc);
-                printMenu();
-                break;
-            case "fill":
-                fill(sc);
-                printMenu();
-                break;
-            case "take":
-                take();
-                printMenu();
-                break;
+        while (exit) {
+            System.out.println("Write action (buy, fill, take, remaining, exit):");
+            String command = sc.nextLine();
+            switch (command) {
+                case "buy":
+                    buy(sc);
+                    break;
+                case "fill":
+                    fill(sc);
+                    break;
+                case "take":
+                    take();
+                    break;
+                case "remaining":
+                    printMenu();
+                    break;
+                case "exit":
+                    exit = false;
+                    break;
+                default:
+                    System.out.println("Unknown command");
+                    break;
+            }
 
         }
 
@@ -52,30 +60,33 @@ public class CoffeeMachine {
     }
 
     public static void buy(Scanner sc){
-        System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino: ");
-        int number = sc.nextInt();
+        System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu: ");
+        String number = sc.nextLine();
         int waterNeeded = 0;
         int milkNeeded = 0;
         int beansNeeded = 0;
-
+        boolean back = false;
         switch(number){
-            case 1: // espresso
+            case "1": // espresso
                 waterNeeded = 250;
                 milkNeeded = 0;
                 beansNeeded = 16;
                 money += 4;
                 break;
-            case 2: // latte
+            case "2": // latte
                 waterNeeded = 350;
                 milkNeeded = 75;
                 beansNeeded = 20;
                 money += 7;
                 break;
-            case 3: // cappuccino
+            case "3": // cappuccino
                 waterNeeded = 200;
                 milkNeeded = 100;
                 beansNeeded = 12;
                 money += 6;
+                break;
+            case "back":
+                back = true;
                 break;
             default:
                 System.out.println("Unknown coffee type");
@@ -89,7 +100,7 @@ public class CoffeeMachine {
             System.out.println("Sorry, not enough coffee beans!");
         } else if (cups < 1) {
             System.out.println("Sorry, not enough disposable cups!");
-        } else {
+        } else if(!back){
             System.out.println("I have enough resources, making you a coffee!");
             water -= waterNeeded;
             milk -= milkNeeded;
