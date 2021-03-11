@@ -10,8 +10,6 @@ public class Main {
     public static char[][] fogOfWar = new char[10][10];
     public static char[][] fogOfWar2 = new char[10][10];
     public static final char[] alphabets = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
-    public static int sunkedShips1 = 0;
-    public static int sunkedShips2 = 0;
 
     public static void main(String[] args) {
 
@@ -19,23 +17,19 @@ public class Main {
         FillGrid(grid2);
         FillGrid(fogOfWar);
         FillGrid(fogOfWar2);
+        System.out.println("Player 1, place your ships to the game field");
         DisplayGrid(grid1, alphabets);
-        CheckCoordinates(grid1, alphabets, "Aircraft Carrier", 5);
-        CheckCoordinates(grid1, alphabets, "Battleship", 4);
-        CheckCoordinates(grid1, alphabets, "Submarine", 3);
-        CheckCoordinates(grid1, alphabets, "Cruiser", 3);
-        CheckCoordinates(grid1, alphabets, "Destroyer", 2);
+        for(Ships ship: Ships.values()) {
+            CheckCoordinates(grid1, alphabets, ship.shipString, ship.shipSize);
+        }
         promptEnterKey();
 
         System.out.println("Player 2, place your ships to the game field");
         DisplayGrid(grid2, alphabets);
-        CheckCoordinates(grid2, alphabets, "Aircraft Carrier", 5);
-        CheckCoordinates(grid2, alphabets, "Battleship", 4);
-        CheckCoordinates(grid2, alphabets, "Submarine", 3);
-        CheckCoordinates(grid2, alphabets, "Cruiser", 3);
-        CheckCoordinates(grid2, alphabets, "Destroyer", 2);
+        for(Ships ship: Ships.values()) {
+            CheckCoordinates(grid2, alphabets, ship.shipString, ship.shipSize);
+        }
         promptEnterKey();
-       // System.out.println("The game starts!");
 
         while(true) {
 
@@ -43,33 +37,58 @@ public class Main {
             System.out.println("---------------------");
             DisplayGrid(grid1, alphabets);
             System.out.println("Player 1, it's your turn:");
-            TakeShot(grid2, alphabets, fogOfWar2,sunkedShips1);
-
-            if(sunkedShips2 == 5 || sunkedShips1 == 5) break;
+            TakeShot(grid2, alphabets, fogOfWar2);
+            if(!(SunkedShips.getSunkedShips1() == 5 || SunkedShips.getSunkedShips2() == 5)) promptEnterKey();
+            else break;
 
             DisplayGrid(fogOfWar, alphabets);
             System.out.println("---------------------");
             DisplayGrid(grid2, alphabets);
             System.out.println("Player 2, it's your turn:");
-            TakeShot(grid1, alphabets, fogOfWar,sunkedShips2);
-
-            if(sunkedShips2 == 5 || sunkedShips1 == 5) break;
+            TakeShot(grid1, alphabets, fogOfWar);
+               if(!(SunkedShips.getSunkedShips1() == 5 || SunkedShips.getSunkedShips2() == 5)) promptEnterKey();
+               else break;
 
 
         }
 
     }
-    public static void promptEnterKey(){
-        System.out.println("Press Enter and pass the move to another player");
-        try {
-            int read = System.in.read(new byte[2]);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static final class SunkedShips {
+
+        private static int sunkedShips1 = 0;
+        private static int sunkedShips2 = 0;
+
+        public static int getSunkedShips1(){
+            return sunkedShips1;
+        }
+        public static int getSunkedShips2(){
+            return sunkedShips2;
+        }
+
+        public static void increaseSunkedShips1(){
+            SunkedShips.sunkedShips1++;
+            System.out.println(sunkedShips1);
+        }
+        public static void increaseSunkedShips2( ){
+            SunkedShips.sunkedShips2++;
+            System.out.println(sunkedShips2);
         }
     }
-    public static void TakeShot(char[][] grid, char[] alphabets , char[][] fogOfWar, int sunkedShips) {
+    public static void SunkMessage(char[][] grid  ){
+        if(grid == grid1){
+            SunkedShips.increaseSunkedShips1();
+        }else{
+            SunkedShips.increaseSunkedShips2();
+        }
+        if(SunkedShips.getSunkedShips1() == 5 || SunkedShips.getSunkedShips2() == 5){
+            System.out.println("You sank the last ship. You won. Congratulations!");
+        }else System.out.println("You sank a ship! Specify a new target:");
+    }
+
+    public static void TakeShot(char[][] grid, char[] alphabets , char[][] fogOfWar) {
         System.out.println("Take a shot!");
         String coordinate;
+
         int first;
         while (true) {
             coordinate = scanner.nextLine();
@@ -84,97 +103,82 @@ public class Main {
                     case 'O':
                         grid[index][first-1] = 'X';
                         fogOfWar[index][first-1] ='X';
-                       // DisplayGrid(fogOfWar, alphabets);
 
-                            if(coordinate.charAt(0) == 'A' && first == 1){
-                                if(grid[index+1][first-1] == 'O' || grid[index][first] == 'O'){
-                                    System.out.println("You hit a ship!");
-                                }else{
-                                    sunkedShips++;
-                                    SunkMessage(sunkedShips);
-                                }
-                            }else if(coordinate.charAt(0) == 'J' && first == 1){
-                                if(grid[index-1][first-1] == 'O' || grid[index][first] == 'O'){
-                                    System.out.println("You hit a ship!");
-                                }else{
-                                    sunkedShips++;
-                                    SunkMessage(sunkedShips);
-                                }
-                            }else if(first == 1){
-                                if(grid[index-1][first-1] == 'O' || grid[index+1][first-1] == 'O' || grid[index][first] == 'O'){
-                                    System.out.println("You hit a ship!");
-                                }else{
-                                    sunkedShips++;
-                                    SunkMessage(sunkedShips);//first numer //index litera
-                                }
-                            }else if(coordinate.charAt(0) == 'A' && first == 10){
-                                if(grid[index+1][first-1] == 'O' || grid[index][first-2] == 'O'){
-                                    System.out.println("You hit a ship!");
-                                }else{
-                                    sunkedShips++;
-                                    SunkMessage(sunkedShips);//first numer //index litera
-                                }
-                            }else if(coordinate.charAt(0) == 'J' && first == 10) {
-                                if (grid[index - 1][first - 1] == 'O' || grid[index][first - 2] == 'O') {
-                                    System.out.println("You hit a ship!");
-                                } else {
-                                    sunkedShips++;
-                                    SunkMessage(sunkedShips);//first numer //index litera
-                                }
-                            }else if(first == 10) {
-                                if (grid[index + 1][first - 1] == 'O' || grid[index - 1][first - 1] == 'O' || grid[index][first - 2] == 'O') {
-                                    System.out.println("You hit a ship!");
-                                } else {
-                                    sunkedShips++;
-                                    SunkMessage(sunkedShips);//first numer //index litera
-                                }
-                            }else if(coordinate.charAt(0) == 'A'){
-                                if (grid[index][first - 2] == 'O' || grid[index][first ] == 'O' || grid[index+1][first - 1] == 'O') {
-                                    System.out.println("You hit a ship!");
-                                } else {
-                                    sunkedShips++;
-                                    SunkMessage(sunkedShips);//first numer //index litera
-                                }
-                            }else if(coordinate.charAt(0) == 'J'){
-                                if (grid[index][first - 2] == 'O' || grid[index][first] == 'O' || grid[index-1][first - 1] == 'O') {
-                                    System.out.println("You hit a ship!");
-                                } else {
-                                    sunkedShips++;
-                                    SunkMessage(sunkedShips);
-                                }
-                            } else if (grid[index][first - 2] == 'O' || grid[index][first] == 'O' || grid[index - 1][first-1] == 'O' || grid[index + 1][first-1] == 'O') {
+                        if(coordinate.charAt(0) == 'A' && first == 1){
+                            if(grid[index+1][first-1] == 'O' || grid[index][first] == 'O'){
                                 System.out.println("You hit a ship!");
-
-                            } else {
-                                sunkedShips++;
-                                SunkMessage(sunkedShips);
+                            }else{
+                                SunkMessage(grid);
                             }
+                        }else if(coordinate.charAt(0) == 'J' && first == 1){
+                            if(grid[index-1][first-1] == 'O' || grid[index][first] == 'O'){
+                                System.out.println("You hit a ship!");
+                            }else{
+                                SunkMessage(grid);
+                            }
+                        }else if(first == 1){
+                            if(grid[index-1][first-1] == 'O' || grid[index+1][first-1] == 'O' || grid[index][first] == 'O'){
+                                System.out.println("You hit a ship!");
+                            }else{
+                                SunkMessage(grid);
+                            }
+                        }else if(coordinate.charAt(0) == 'A' && first == 10){
+                            if(grid[index+1][first-1] == 'O' || grid[index][first-2] == 'O'){
+                                System.out.println("You hit a ship!");
+                            }else{
+                                SunkMessage(grid);
+                            }
+                        }else if(coordinate.charAt(0) == 'J' && first == 10) {
+                            if (grid[index - 1][first - 1] == 'O' || grid[index][first - 2] == 'O') {
+                                System.out.println("You hit a ship!");
+                            } else {
+                                SunkMessage(grid);
+                            }
+                        }else if(first == 10) {
+                            if (grid[index + 1][first - 1] == 'O' || grid[index - 1][first - 1] == 'O' || grid[index][first - 2] == 'O') {
+                                System.out.println("You hit a ship!");
+                            } else {
+                                SunkMessage(grid);
+                            }
+                        }else if(coordinate.charAt(0) == 'A'){
+                            if (grid[index][first - 2] == 'O' || grid[index][first ] == 'O' || grid[index+1][first - 1] == 'O') {
+                                System.out.println("You hit a ship!");
+                            } else {
+                                SunkMessage(grid);//first numer //index litera
+                            }
+                        }else if(coordinate.charAt(0) == 'J'){
+                            if (grid[index][first - 2] == 'O' || grid[index][first] == 'O' || grid[index-1][first - 1] == 'O') {
+                                System.out.println("You hit a ship!");
+                            } else {
+                                SunkMessage(grid);
+                            }
+                        } else if (grid[index][first - 2] == 'O' || grid[index][first] == 'O' || grid[index - 1][first-1] == 'O' || grid[index + 1][first-1] == 'O') {
+                            System.out.println("You hit a ship!");
+
+                        } else {
+                            SunkMessage(grid);
+                        }
 
                         break;
                     case '~':
                         grid[index][first-1] = 'M';
                         fogOfWar[index][first-1] ='M';
-                       // DisplayGrid(Main.fogOfWar, alphabets);
                         System.out.println("You missed!");
                         break;
-                   // case 'X':
-                      //  DisplayGrid(Main.fogOfWar, alphabets);
-                        //System.out.println("You've already shot here");
-                       // break;
+                    case 'X':
+                        DisplayGrid(Main.fogOfWar, alphabets);
+                        System.out.println("You've already shot here");
+                        break;
                 }
-                promptEnterKey();
-                 break;
+
+                break;
             } else{
                 System.out.println("Error! You entered the wrong coordinates! Try again:");
 
             }
         }
     }
-    public static void SunkMessage(int sunkedShips){
-        if(sunkedShips == 1){
-            System.out.println("You sank the last ship. You won. Congratulations!");
-        }else System.out.println("You sank a ship! Specify a new target:");
-    }
+
     public static void CheckCoordinates(char[][] grid, char[] alphabets, String shipName, int shipSize) {
         String[] coordinates;
         System.out.println("Enter the coordinates of the " + shipName + " (" + shipSize + " cells):");
@@ -218,13 +222,13 @@ public class Main {
                     if (first > 1 && second > 1 && index1 > 1 && index2 > 1 && index1 < 9 && index2 < 9) {
                         if (grid[index1 - 1][first] != 'O' && grid[index1 + 1][first] != 'O' && grid[index2 - 1][first] != 'O' && grid[index2 + 1][first] != 'O') {
                             if (index1 < index2 && first == second) {
-                                for (int i = index1; i <= index2; i++) { //2gi if do fixa
+                                for (int i = index1; i <= index2; i++) {
                                     grid[i][first - 1] = 'O';
                                 }
                                 DisplayGrid(grid, alphabets);
                                 break;
                             } else if(index1 > index2 && first == second){
-                                for (int i = index2; i <= index1; i++) { //2gi if do fixa
+                                for (int i = index2; i <= index1; i++) {
                                     grid[i][first - 1] = 'O';
                                 }
                                 DisplayGrid(grid, alphabets);
@@ -252,6 +256,7 @@ public class Main {
             }
         }
     }
+
     public static void FillGrid(char[][] grid){
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
@@ -272,6 +277,33 @@ public class Main {
                 System.out.print(grid[i][j] + " ");
             }
             System.out.println();
+        }
+    }
+
+    public static void promptEnterKey(){
+
+            System.out.println("Press Enter and pass the move to another player");
+            try {
+                int read = System.in.read(new byte[2]);
+            } catch (IOException e) {
+                e.printStackTrace();
+
+        }
+    }
+
+    public enum Ships{
+        AIRCRAFT_CARRIER (5, "Aircraft Carrier"),
+        BATTLESHIP (4, "Battleship"),
+        SUBMARINE (3, "Submarine"),
+        CRUISER (3, "Cruiser"),
+        DESTROYER (2, "Destroyer");
+
+        final int shipSize;
+        final String shipString;
+
+        Ships(int shipSize, String shipString) {
+            this.shipSize = shipSize;
+            this.shipString = shipString;
         }
     }
 }
