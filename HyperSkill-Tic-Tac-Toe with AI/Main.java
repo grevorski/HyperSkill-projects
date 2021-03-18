@@ -1,18 +1,19 @@
 package tictactoe;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
-public class Main {
-
-
+public class Main extends Logic{
 
     public static char[][] chars = {{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}};
 
     public static void main(String[] args) {
     Logic game = new Logic();
 
-        game.gameLogic(chars);
+        game.printGrid(chars);
+        while(!game.isFinished){
+            game.playerMove(chars);
+            if(game.isFinished) break;
+            game.easyAi(chars);
+        }
+
 
 
     }
