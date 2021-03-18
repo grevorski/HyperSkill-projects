@@ -7,18 +7,7 @@ public class Main extends Logic{
     public static void main(String[] args) {
     Logic game = new Logic();
 
-        game.printGrid(chars);
-        while(!game.isFinished){
-            game.playerMove(chars);
-            if(game.isFinished) break;
-            game.easyAi(chars);
-        }
-
-
+            game.gameOptions(chars);
 
     }
-
-
-
-
 }

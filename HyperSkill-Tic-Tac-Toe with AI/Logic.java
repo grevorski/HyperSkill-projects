@@ -9,31 +9,9 @@ public class Logic extends Grid{
 
 
     public void playerMove(char[][] chars){
-//        System.out.println("Enter the cells: ");
-//        String cells = scanner.nextLine().replace("_"," ");
-//        int k = 0;
-//        int xCount =0;
-//        int oCount =0;
-//
-//        // convert the string into grid
-//        for (int i = 0; i < 3; i++)
-//        {
-//            for (int j = 0; j < 3; j++)
-//            {
-//                if(cells.charAt(k) == 'X') xCount++;
-//                if(cells.charAt(k) == 'O') oCount++;
-//
-//
-//                chars[i][j] = cells.charAt(k);
-//                k++;
-//            }
-//        }
-//        if(xCount>oCount) nextSymbol = 'X';
-//        else if(xCount<oCount) nextSymbol = 'O';
-//        else nextSymbol ='O';
         int x = -1;
         int y = -1;
-        //while (!isFinished) {
+
             boolean isCorrect = false;
             while (!isCorrect) {
                 while(!isCorrect) {
@@ -60,9 +38,9 @@ public class Logic extends Grid{
                         isCorrect = false;
                         System.out.println("Coordinates should be from 1 to 3!");
                     }
-                    result(chars);
-           // }
         }
+        printGrid(chars);
+        result(chars);
     }
 
     private void result(char[][] chars){
@@ -99,20 +77,20 @@ public class Logic extends Grid{
             result = "Impossible";
         } else if (sums.contains(264)) {
             result = "X wins";
+            resetGrid(chars);
             isFinished = true;
         } else if (sums.contains(237)) {
             result = "O wins";
+            resetGrid(chars);
             isFinished = true;
         } else if (xNum + oNum == 9) {
             result = "Draw";
+            resetGrid(chars);
             isFinished = true;
         }
-        printGrid(chars);
-        System.out.println(result);
-    }
 
-    private  boolean isNumeric(String str) {
-        return str != null && str.matches("[-+]?\\d*\\.?\\d+");
+        System.out.println(result);
+
     }
 
     private  char getSymbol() {
@@ -132,6 +110,66 @@ public class Logic extends Grid{
                     break;
                 }
             }
+        printGrid(chars);
         result(chars);
+    }
+
+    public void gameOptions(char[][] chars){
+        boolean exit = false;
+
+        String input;
+        while(!exit) {
+            System.out.println("Input command: ");
+            input = scanner.nextLine();
+            if(input.equals("")) input = scanner.nextLine();
+            switch (input) {
+                case "start easy easy":
+
+                    printGrid(chars);
+                    while (!isFinished) {
+                        easyAi(chars);
+                        if (isFinished) break;
+                        easyAi(chars);
+                    }
+                    isFinished=false;
+                    break;
+                case "start easy user":
+
+                    printGrid(chars);
+                    while (!isFinished) {
+                        easyAi(chars);
+                        if (isFinished) break;
+                        playerMove(chars);
+                    }
+                    isFinished=false;
+                    break;
+                case "start user easy":
+
+                    printGrid(chars);
+                    while (!isFinished) {
+                        playerMove(chars);
+                        if (isFinished) break;
+                        easyAi(chars);
+                    }
+                    isFinished=false;
+                    break;
+                case "start user user":
+
+                    printGrid(chars);
+                    while (!isFinished) {
+                        playerMove(chars);
+                        if (isFinished) break;
+                        playerMove(chars);
+                    }
+                    isFinished=false;
+                    break;
+                case "exit":
+                    exit = true;
+                    break;
+                default:
+                    System.out.println("Bad parameters!");
+
+            }
+        }
     }
 }

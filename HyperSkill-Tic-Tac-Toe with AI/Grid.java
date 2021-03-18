@@ -14,4 +14,13 @@ public class Grid {
         System.out.println("---------");
     }
 
+    public void resetGrid(char[][] cells){
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                cells[i][j] = ' ';
+            }
+        }
+
+    }
+
 }
